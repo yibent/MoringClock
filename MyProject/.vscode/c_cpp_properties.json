@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Qt/Qt5.9.9/5.9.9/mingw53_32/include/**",
+                "C:/Users/Bang/Desktop/MorningClock_new/build-MyProject-Desktop_Qt_5_9_9_MinGW_32bit-Debug/**"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**",
+                    "C:/Qt/Qt5.9.9/5.9.9/mingw53_32/include/**",
+                    "C:/Users/Bang/Desktop/MorningClock_new/build-MyProject-Desktop_Qt_5_9_9_MinGW_32bit-Debug/**"
+                ]
+            },
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "compilerPath": "C:/mingw64/bin/g++.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
