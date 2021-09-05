@@ -9,6 +9,7 @@
 using namespace std;
 using namespace std::chrono;
 
+#include <QDebug>
 #include <QFont>
 #include <QMouseEvent>
 #include <QPaintEvent>
@@ -18,7 +19,8 @@ using namespace std::chrono;
 
 Director *Director::instance = nullptr;
 
-Director::Director(QWidget *parent) : QWidget(parent), ui(new Ui::Director) {
+Director::Director(QWidget *parent) : QWidget(parent), ui(new Ui::Director)
+{
     ui->setupUi(this);
     this->setWindowFlags(Qt::WindowMinimizeButtonHint |
                          Qt::WindowCloseButtonHint);
@@ -36,7 +38,8 @@ Director::Director(QWidget *parent) : QWidget(parent), ui(new Ui::Director) {
 
 Director::~Director() { delete ui; }
 
-void Director::runWithScene(Scene *scene) {
+void Director::runWithScene(Scene *scene)
+{
     lastScene = this->scene;
     this->scene = scene;
     scene->retain();
@@ -44,21 +47,25 @@ void Director::runWithScene(Scene *scene) {
 
 Scene *Director::getScene() { return scene; }
 
-Vec2 Director::getVisibleSize() {
+Vec2 Director::getVisibleSize()
+{
     auto s = size();
     return Vec2(s.width(), s.height());
 }
 
-void Director::setWindowSize(int w, int h) {
+void Director::setWindowSize(int w, int h)
+{
     setFixedSize(w, h);
     resize(w, h);
 }
 
-Vec2 Director::convertPosition(const Vec2 &pos) {
+Vec2 Director::convertPosition(const Vec2 &pos)
+{
     return Vec2(pos.x, size().height() - pos.y);
 }
 
-void Director::timerUpdate() {
+void Director::timerUpdate()
+{
     constexpr int duration = Def::updateDelay * 1000;
     auto t0 = steady_clock::now();
     instance->repaint();
@@ -71,34 +78,30 @@ void Director::timerUpdate() {
     timer->setInterval(c);
 }
 
-void Director::mousePressEvent(QMouseEvent *event) {
+void Director::mousePressEvent(QMouseEvent *event)
+{
     if (scene) scene->touchDown(Vec2(event->x(), event->y()));
 }
 
-void Director::mouseReleaseEvent(QMouseEvent *event) {
+void Director::mouseReleaseEvent(QMouseEvent *event)
+{
     if (scene) scene->touchUp(Vec2(event->x(), event->y()));
 }
 
-void Director::mouseMoveEvent(QMouseEvent *event) {
+void Director::mouseMoveEvent(QMouseEvent *event)
+{
     if (scene) scene->touchMove(Vec2(event->x(), event->y()));
 }
 
-void Director::paintEvent(QPaintEvent *) {
+void Director::paintEvent(QPaintEvent *)
+{
+    auto t0 = steady_clock::now();
+
     if (!scene) {
         return;
     }
     scene->update();
-    /*
-    if(isLeftDown())
-    {
-        setColor(0x00FFC80F);
-    }
-    else
-    {
-        setColor(0x00000000);
-    }
-    drawColor();
-    */
+
     if (lastScene) {
         lastScene->release();
         lastScene = nullptr;
@@ -107,14 +110,19 @@ void Director::paintEvent(QPaintEvent *) {
     QPixmap pixmap{size()};
     QPainter painter{&pixmap};
 
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, false);
 
     scene->draw(painter);
 
     painter.end();
     painter.begin(this);
     painter.drawPixmap(0, 0, pixmap);
+
+    auto t1 = steady_clock::now();
+    auto d = duration_cast<milliseconds>(t1 - t0);
+    qDebug() << "paintTime:" << d.count();
 }
 
-void Director::timerEvent(QTimerEvent *) { /*this->repaint();*/
+void Director::timerEvent(QTimerEvent *)
+{ /*this->repaint();*/
 }

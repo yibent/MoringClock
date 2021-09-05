@@ -14,7 +14,8 @@
 using namespace std;
 using namespace std::chrono;
 
-BreathPage* BreathPage::create() {
+BreathPage* BreathPage::create()
+{
     auto mp = new (std::nothrow) BreathPage{};
     if (mp && mp->init()) {
         mp->autorelease();
@@ -23,7 +24,8 @@ BreathPage* BreathPage::create() {
     return nullptr;
 }
 
-bool BreathPage::init() {
+bool BreathPage::init()
+{
     if (!BasePage::init()) {
         return false;
     }
@@ -40,11 +42,13 @@ bool BreathPage::init() {
 
 BreathPageLayer0::BreathPageLayer0() {}
 
-BreathPageLayer0::~BreathPageLayer0() {
+BreathPageLayer0::~BreathPageLayer0()
+{
     EventDispatcher::instance->unregist(eventRec);
 }
 
-BreathPageLayer0* BreathPageLayer0::create() {
+BreathPageLayer0* BreathPageLayer0::create()
+{
     auto l = new (std::nothrow) BreathPageLayer0{};
     if (l && l->init()) {
         l->autorelease();
@@ -53,7 +57,8 @@ BreathPageLayer0* BreathPageLayer0::create() {
     return nullptr;
 }
 
-bool BreathPageLayer0::init() {
+bool BreathPageLayer0::init()
+{
     auto visibleSize = Director::instance->getVisibleSize();
 
     auto pageTurn = Sprite::create(RES_FILE("BreathPage/page_turn.png"));
@@ -61,7 +66,10 @@ bool BreathPageLayer0::init() {
     pageTurn->setScale(Vec2(1.5f, 1.5f));
     this->addChild(pageTurn, 3);
     auto pageTurn_fadeOut = FadeOut::create(0.2f);
-    pageTurn->runAction(pageTurn_fadeOut);
+    auto pagrTurn_vis =
+        CallFuncN::create([](Node* node) { node->setVisible(false); });
+    auto pageTurn_seq = Sequence::create({pageTurn_fadeOut, pagrTurn_vis});
+    pageTurn->runAction(pageTurn_seq);
 
     auto bk = Sprite::create(RES_FILE("black_bk.png"));
     bk->setPosition(visibleSize / 2);

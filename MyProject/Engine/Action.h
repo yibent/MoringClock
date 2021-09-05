@@ -13,18 +13,20 @@ class Action : public Ref {
 public:
     virtual void step(float time) = 0;
     virtual void update(float time) = 0;
-    virtual void setNode(Node *node);
+    virtual void setNode(Node* node);
     bool isRunFinish();
 
 protected:
     bool runFinish = false;
-    Node *node = nullptr;
+    Node* node = nullptr;
 };
 
 class ActionInterval : public Action {
 public:
     ActionInterval(float duration);
     virtual ~ActionInterval();
+
+    virtual void firstCall();
     /*time是真实的每一帧的时间,step()调用update()传入的是
       计算值:(动作开始经过的时间 / 动作总时间)
     */
@@ -35,42 +37,42 @@ public:
 protected:
     float pastTime = 0;
     float duration = 0;
-    bool firstCall = true;
+    bool _firstCall = true;
 };
 
 //动作序列
 class Sequence : public Action {
 public:
-    static Sequence *create(const std::vector<Action *> &actions);
-    Sequence(const std::vector<Action *> &actions);
+    static Sequence* create(const std::vector<Action*>& actions);
+    Sequence(const std::vector<Action*>& actions);
     virtual ~Sequence();
 
     virtual void step(float time) override;
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
+    virtual void setNode(Node* node) override;
 
 private:
-    std::queue<Action *> actions;
+    std::queue<Action*> actions;
 };
 
 //同步执行的动作
 class Spawn : public Action {
 public:
-    static Spawn *create(const std::vector<Action *> &actions);
-    Spawn(const std::vector<Action *> &actions);
+    static Spawn* create(const std::vector<Action*>& actions);
+    Spawn(const std::vector<Action*>& actions);
     virtual ~Spawn();
 
     virtual void step(float time) override;
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
+    virtual void setNode(Node* node) override;
 
 private:
-    std::vector<Action *> actions;
+    std::vector<Action*> actions;
 };
 
 class DelayTime : public Action {
 public:
-    static DelayTime *create(float duration);
+    static DelayTime* create(float duration);
     DelayTime(float duration);
     virtual ~DelayTime();
 
@@ -84,8 +86,8 @@ private:
 
 class CallFunc : public Action {
 public:
-    static CallFunc *create(const std::function<void()> &func);
-    CallFunc(const std::function<void()> &func);
+    static CallFunc* create(const std::function<void()>& func);
+    CallFunc(const std::function<void()>& func);
     virtual ~CallFunc();
 
     virtual void step(float time) override;
@@ -97,15 +99,15 @@ private:
 
 class CallFuncN : public Action {
 public:
-    static CallFuncN *create(const std::function<void(Node *)> &func);
-    CallFuncN(const std::function<void(Node *)> &func);
+    static CallFuncN* create(const std::function<void(Node*)>& func);
+    CallFuncN(const std::function<void(Node*)>& func);
     virtual ~CallFuncN();
 
     virtual void step(float time) override;
     virtual void update(float time) override;
 
 private:
-    std::function<void(Node *)> func;
+    std::function<void(Node*)> func;
 };
 
 struct EaseFunction {
@@ -121,44 +123,43 @@ public:
       time是 计算值:(动作开始经过的时间 / 动作总时间)
       rate是一个比率
     */
-    static EaseAction *create(
-        ActionInterval *action, float rate,
-        const std::function<float(float /*time*/, float /*rate*/)> &func);
-    EaseAction(ActionInterval *action, float rate,
-               const std::function<float(float, float)> &func);
+    static EaseAction* create(
+        ActionInterval* action, float rate,
+        const std::function<float(float /*time*/, float /*rate*/)>& func);
+    EaseAction(ActionInterval* action, float rate,
+               const std::function<float(float, float)>& func);
     virtual ~EaseAction();
 
+    virtual void firstCall() override;
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
+    virtual void setNode(Node* node) override;
 
 private:
     std::function<float(float, float)> easeFunc;
-    ActionInterval *action = nullptr;
+    ActionInterval* action = nullptr;
     float rate = 0;
 };
 
 class MoveBy : public ActionInterval {
 public:
-    static MoveBy *create(float time, const Vec2 &deltaPos);
-    MoveBy(float time, const Vec2 &deltaPos);
+    static MoveBy* create(float time, const Vec2& deltaPos);
+    MoveBy(float time, const Vec2& deltaPos);
     virtual ~MoveBy();
 
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
 
 protected:
     Vec2 lastPos{};
-    Vec2 startPos{};
     Vec2 deltaPos{};
 };
 
 class MoveTo : public MoveBy {
 public:
-    static MoveTo *create(float time, const Vec2 &toPos);
-    MoveTo(float time, const Vec2 &toPos);
+    static MoveTo* create(float time, const Vec2& toPos);
+    MoveTo(float time, const Vec2& toPos);
     virtual ~MoveTo();
 
-    virtual void setNode(Node *node) override;
+    virtual void firstCall() override;
 
 private:
     Vec2 toPos{};
@@ -166,41 +167,40 @@ private:
 
 class FadeIn : public ActionInterval {
 public:
-    static FadeIn *create(float time);
+    static FadeIn* create(float time);
     FadeIn(float time);
     virtual ~FadeIn();
 
+    virtual void firstCall() override;
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
 
 protected:
-    float time = 0;
-    float startOp = 0;
+    float lastOp = 0;
     float deltaOp = 0;
 };
 
 class FadeOut : public ActionInterval {
 public:
-    static FadeOut *create(float time);
+    static FadeOut* create(float time);
     FadeOut(float time);
     virtual ~FadeOut();
 
+    virtual void firstCall() override;
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
 
 protected:
-    float startOp = 0;
+    float lastOp = 0;
     float deltaOp = 0;
 };
 
 class FadeTo : public ActionInterval {
 public:
-    static FadeTo *create(float time, float opacity);
+    static FadeTo* create(float time, float opacity);
     FadeTo(float time, float opacity);
     virtual ~FadeTo();
 
+    virtual void firstCall() override;
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
 
 protected:
     float startOp = 0;
@@ -210,26 +210,38 @@ protected:
 
 class RotateBy : public ActionInterval {
 public:
-    static RotateBy *create(float time, float rotation);
+    static RotateBy* create(float time, float rotation);
     RotateBy(float time, float rotation);
     virtual ~RotateBy();
 
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
 
 protected:
-    float startRotation = 0;
+    float lastRotation = 0;
     float deltaRotation = 0;
+};
+
+class RotateTo : public RotateBy {
+public:
+    static RotateTo* create(float time, float rotation);
+    RotateTo(float time, float rotation);
+    virtual ~RotateTo();
+
+    virtual void firstCall() override;
+    virtual void update(float time) override;
+
+private:
+    float toRotation = 0;
 };
 
 class ScaleTo : public ActionInterval {
 public:
-    static ScaleTo *create(float time, float scale);
+    static ScaleTo* create(float time, float scale);
     ScaleTo(float time, float scale);
     virtual ~ScaleTo();
 
+    virtual void firstCall() override;
     virtual void update(float time) override;
-    virtual void setNode(Node *node) override;
 
 protected:
     Vec2 startScale{};

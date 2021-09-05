@@ -5,8 +5,7 @@
 
 class Ref;
 
-class AutoReleasePool
-{
+class AutoReleasePool {
 public:
     static AutoReleasePool *instance;
     void updatePool();
@@ -20,26 +19,18 @@ private:
 
 using ARP = AutoReleasePool;
 
-class Ref
-{
+class Ref {
 public:
     Ref() {}
     virtual ~Ref() {}
-    
-    virtual void retain()
-    {
-        ++count;
-    }
+
+    virtual void retain() { ++count; }
     virtual void release()
     {
         --count;
-        if (count == 0)
-            delete this;
+        if (count == 0) delete this;
     }
-    int getCount()
-    {
-        return count;
-    }
+    int getCount() { return count; }
     void autorelease()
     {
         ARP::instance->addToPool(this);
