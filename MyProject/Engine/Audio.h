@@ -5,7 +5,7 @@
 
 #if !DISABLE_AUDIO
 
-#include <QMediaPlayer>
+#include <QSound>
 #include <string>
 #include <vector>
 
@@ -25,7 +25,8 @@ public:
     void setVolume(float volume);
 
 private:
-    QMediaPlayer *player = nullptr;
+    QSound *player = nullptr;
+
 };
 
 #endif

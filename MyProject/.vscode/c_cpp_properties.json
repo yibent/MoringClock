@@ -3,17 +3,16 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
                 "D:/Software/Qt/5.9.9/mingw53_32/include/**",
-                "C:/Users/Bang/Desktop/MorningClock/build-MyProject-Desktop_Qt_5_9_9_MinGW_32bit-Debug/**"
+                "${workspaceFolder}/../**"
             ],
-            "browse": {
-                "path": [
-                    "${workspaceFolder}/**",
-                    "D:/Software/Qt/5.9.9/mingw53_32/include/**",
-                    "C:/Users/Bang/Desktop/MorningClock/build-MyProject-Desktop_Qt_5_9_9_MinGW_32bit-Debug/**"
-                ]
-            },
+            // "browse": {
+            //     "path": [
+            //         "${workspaceFolder}/**",
+            //         "D:/Software/Qt/5.9.9/mingw53_32/include/**",
+            //         "C:/Users/Bang/Desktop/MorningClock/build-MyProject-Desktop_Qt_5_9_9_MinGW_32bit-Debug/**"
+            //     ]
+            // },
             "defines": [
                 "_DEBUG",
                 "UNICODE",
