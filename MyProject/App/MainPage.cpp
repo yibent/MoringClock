@@ -18,7 +18,8 @@
 using namespace std;
 using namespace std::chrono;
 
-MainPage* MainPage::create() {
+MainPage* MainPage::create()
+{
     auto mp = new (std::nothrow) MainPage{};
     if (mp && mp->init()) {
         mp->autorelease();
@@ -27,7 +28,8 @@ MainPage* MainPage::create() {
     return nullptr;
 }
 
-bool MainPage::init() {
+bool MainPage::init()
+{
     if (!BasePage::init()) {
         return false;
     }
@@ -46,12 +48,14 @@ MainPageLayer0::MainPageLayer0() {}
 
 MainPageLayer0::~MainPageLayer0() {}
 
-void MainPageLayer0::release() {
+void MainPageLayer0::release()
+{
     EventDispatcher::instance->unregist(eventRec);
     Node::release();
 }
 
-MainPageLayer0* MainPageLayer0::create() {
+MainPageLayer0* MainPageLayer0::create()
+{
     auto l = new (std::nothrow) MainPageLayer0{};
     if (l && l->init()) {
         l->autorelease();
@@ -60,7 +64,8 @@ MainPageLayer0* MainPageLayer0::create() {
     return nullptr;
 }
 
-bool MainPageLayer0::init() {
+bool MainPageLayer0::init()
+{
     auto visibleSize = Director::instance->getVisibleSize();
 
     auto bk = Sprite::create(RES_FILE("black_bk.png"));
@@ -100,8 +105,8 @@ bool MainPageLayer0::init() {
     menu->addButton(musicBk);
 
     this->meditationBk = Button::create(RES_FILE("MainPage/meditation_bk.png"),
-                                       RES_FILE("MainPage/meditation_bk.png"),
-                                       RES_FILE("MainPage/meditation_bk.png"));
+                                        RES_FILE("MainPage/meditation_bk.png"),
+                                        RES_FILE("MainPage/meditation_bk.png"));
     meditationBk->setPosition(Vec2(1437, 509));
     meditationBk->setCallBack([&](basic_Button* button) {
         if (!onSlide) {
@@ -169,15 +174,22 @@ bool MainPageLayer0::init() {
         return true;
     };
 
+    auto sss = Sound::create(R"(C:\Users\Bang\Desktop\123123.wav)");
+    sss->play();
+    sss->setVolume(0.5f);
+    sss->retain();
+
     return true;
 }
 
-void MainPageLayer0::touchDown(const Vec2& pos) {
+void MainPageLayer0::touchDown(const Vec2& pos)
+{
     downPos = pos;
     orgPos = slideBar->getPosition();
 }
 
-void MainPageLayer0::touchMove(const Vec2& pos) {
+void MainPageLayer0::touchMove(const Vec2& pos)
+{
     float flag = 1;
     float dis = pos.x - downPos.x;
     if (dis < 0) {
@@ -190,7 +202,8 @@ void MainPageLayer0::touchMove(const Vec2& pos) {
     slideBar->setPosition(orgPos + Vec2(pow(dis, 0.8f) * flag, 0));
 }
 
-void MainPageLayer0::touchUp(const Vec2& pos) {
+void MainPageLayer0::touchUp(const Vec2& pos)
+{
     onSlide = false;
     Vec2 stopP0(0, 0);
     Vec2 stopP1(-350, 0);
@@ -211,7 +224,8 @@ void MainPageLayer0::touchUp(const Vec2& pos) {
     slideBar->runAction(runAct);
 }
 
-void MainPageLayer0::breathPageTurn() {
+void MainPageLayer0::breathPageTurn()
+{
     if (onPageTurn) {
         return;
     }
@@ -240,7 +254,8 @@ void MainPageLayer0::breathPageTurn() {
     onPageTurn = true;
 }
 
-void MainPageLayer0::clockPageTurn() {
+void MainPageLayer0::clockPageTurn()
+{
     if (onPageTurn) {
         return;
     }
@@ -269,7 +284,8 @@ void MainPageLayer0::clockPageTurn() {
     onPageTurn = true;
 }
 
-void MainPageLayer0::meditationPageTurn() {
+void MainPageLayer0::meditationPageTurn()
+{
     if (onPageTurn) {
         return;
     }
@@ -298,7 +314,8 @@ void MainPageLayer0::meditationPageTurn() {
     onPageTurn = true;
 }
 
-void MainPageLayer0::breathPage_1Turn() {
+void MainPageLayer0::breathPage_1Turn()
+{
     if (onPageTurn) {
         return;
     }
@@ -307,7 +324,8 @@ void MainPageLayer0::breathPage_1Turn() {
     onPageTurn = true;
 }
 
-void MainPageLayer0::musicPostPageTurn() {
+void MainPageLayer0::musicPostPageTurn()
+{
     if (onPageTurn) {
         return;
     }

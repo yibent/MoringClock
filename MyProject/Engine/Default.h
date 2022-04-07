@@ -1,11 +1,11 @@
 #ifndef __DEFAULT_H__
 #define __DEFAULT_H__
 
-#define DISABLE_AUDIO 1
+#define DISABLE_AUDIO 0
 
 //更新的延迟毫秒数
 namespace Def {
-constexpr float updateDelay = 1.0f / 65;
+constexpr float updateDelay = 1.0f / 30;
 }
 
 #include <QByteArray>

@@ -110,8 +110,6 @@ void Director::paintEvent(QPaintEvent *)
     QPixmap pixmap{size()};
     QPainter painter{&pixmap};
 
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, false);
-
     scene->draw(painter);
 
     painter.end();
@@ -120,7 +118,7 @@ void Director::paintEvent(QPaintEvent *)
 
     auto t1 = steady_clock::now();
     auto d = duration_cast<milliseconds>(t1 - t0);
-    qDebug() << "paintTime:" << d.count();
+    //qDebug() << "paintTime:" << d.count();
 }
 
 void Director::timerEvent(QTimerEvent *)
